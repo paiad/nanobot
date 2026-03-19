@@ -34,7 +34,9 @@ class ChannelManager:
         """Initialize channels discovered via pkgutil scan + entry_points plugins."""
         from nanobot.channels.registry import discover_all
 
-        groq_key = self.config.providers.groq.api_key
+        # Get transcription config
+        transcription = self.config.tools.transcription
+        groq_key = transcription.groq_api_key or self.config.providers.groq.api_key
 
         for name, cls in discover_all().items():
             section = getattr(self.config.channels, name, None)
@@ -49,7 +51,12 @@ class ChannelManager:
                 continue
             try:
                 channel = cls(section, self.bus)
+                # Set transcription settings
+                channel.transcription_provider = transcription.provider
                 channel.transcription_api_key = groq_key
+                channel.faster_whisper_model_path = transcription.faster_whisper_model_path
+                channel.faster_whisper_device = transcription.faster_whisper_device
+                channel.faster_whisper_compute_type = transcription.faster_whisper_compute_type
                 self.channels[name] = channel
                 logger.info("{} channel enabled", cls.display_name)
             except Exception as e:

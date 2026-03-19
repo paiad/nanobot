@@ -129,6 +129,16 @@ class ExecToolConfig(Base):
     path_append: str = ""
 
 
+class TranscriptionConfig(Base):
+    """Voice transcription configuration."""
+
+    provider: str = "groq"  # groq or faster_whisper
+    groq_api_key: str = ""
+    faster_whisper_model_path: str = ""
+    faster_whisper_device: str = "cuda"
+    faster_whisper_compute_type: str = "float16"
+
+
 class MCPServerConfig(Base):
     """MCP server connection configuration (stdio or HTTP)."""
 
@@ -146,6 +156,7 @@ class ToolsConfig(Base):
 
     web: WebToolsConfig = Field(default_factory=WebToolsConfig)
     exec: ExecToolConfig = Field(default_factory=ExecToolConfig)
+    transcription: TranscriptionConfig = Field(default_factory=TranscriptionConfig)
     restrict_to_workspace: bool = False  # If true, restrict all tool access to workspace directory
     mcp_servers: dict[str, MCPServerConfig] = Field(default_factory=dict)
 

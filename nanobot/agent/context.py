@@ -72,9 +72,9 @@ Skills with available="false" need dependencies installed first - you can try in
 - Use file tools when they are simpler or more reliable than shell commands.
 """
 
-        return f"""# nanobot 🐈
+        return f"""# open-pai 🍟
 
-You are nanobot, a helpful AI assistant.
+You are open-pai, a helpful AI assistant.
 
 ## Runtime
 {runtime}
@@ -87,7 +87,7 @@ Your workspace is at: {workspace_path}
 
 {platform_policy}
 
-## nanobot Guidelines
+## open-pai Guidelines
 - State intent before tool calls, but NEVER predict or claim results before receiving them.
 - Before modifying a file, read it first. Do not assume files or directories exist.
 - After writing or editing a file, re-read it if accuracy matters.

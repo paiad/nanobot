@@ -1,0 +1,47 @@
+name: Sync Upstream
+
+on:
+  schedule:
+    - cron: '14 19 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-upstream-main
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/HKUDS/nanobot.git
+          git fetch origin main
+          git fetch upstream main
+
+      - name: Fast-forward main from upstream
+        run: |
+          git checkout main
+          if git merge-base --is-ancestor origin/main upstream/main; then
+            git merge --ff-only upstream/main
+          else
+            echo "origin/main has diverged from upstream/main. Manual sync required."
+            exit 1
+          fi
+
+      - name: Push to fork
+        run: git push origin main
